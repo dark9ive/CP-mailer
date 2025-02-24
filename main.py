@@ -1,3 +1,4 @@
+import sys
 from pprint import pprint
 
 from mail import send_email as send, self_test
@@ -13,7 +14,7 @@ def main():
         account = d[CSV_ID_FIELD] = parse_id(d[CSV_ID_FIELD])
         password = d["PASSWORD"] = rand_pass()
         d["exist"] = check_exist(d[CSV_ID_FIELD])
-        pprint(d)
+        pprint(d, stream=sys.stderr)
         if not d["exist"]:
             subject = SUBJECT_TEMPLATE.substitute(
                     CLASS_NAME=CLASS_NAME
@@ -28,23 +29,8 @@ def main():
             recipient = RECIPIENT_TEMPLATE.substitute(
                     ACCOUNT=account
             )
-            #pprint([subject, body, recipient])
             print(f"\"{account}\",\"{password}\",\"{recipient}\",\"{name}\"", file=import_csv)
-            send(
-                SUBJECT_TEMPLATE.substitute(
-                    CLASS_NAME=CLASS_NAME
-                ),
-                BODY_TEMPLATE.substitute(
-                    NAME=name,
-                    CLASS_NAME=CLASS_NAME,
-                    WEBSITE=WEBSITE,
-                    ACCOUNT=account,
-                    PASSWORD=password
-                ),
-                RECIPIENT_TEMPLATE.substitute(
-                    ACCOUNT=account
-                )
-            )
+            send(subject, body, recipient)
     import_csv.close()
 
 if __name__ == '__main__':
