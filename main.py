@@ -12,10 +12,10 @@ def main():
     for d in data:
         name = d[CSV_NAME_FIELD] = parse_name(d[CSV_NAME_FIELD])
         account = d[CSV_ID_FIELD] = parse_id(d[CSV_ID_FIELD])
-        password = d["PASSWORD"] = rand_pass()
         d["exist"] = check_exist(d[CSV_ID_FIELD])
         pprint(d, stream=sys.stderr)
         if not d["exist"]:
+            password = rand_pass()
             subject = SUBJECT_TEMPLATE.substitute(
                     CLASS_NAME=CLASS_NAME
             )
